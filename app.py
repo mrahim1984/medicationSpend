@@ -6,14 +6,10 @@ import numpy as np
 with open("medication_claim_model.pkl", "rb") as f:
     model = pickle.load(f)
 
-brand_map = {
-    "Panadol": 1,
-    "Tylenol": 2,
-    "GenericA": 3,
-    "GenericB": 4,
-    "Other": 0
-}
+import pickle
 
+with open("medication_claim_model.pkl", "wb") as f:
+    pickle.dump((model, brand_map), f)
 
 # App UI
 st.title("💊 Predict Medication Claim Volume for Next Year")
