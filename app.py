@@ -1,28 +1,37 @@
-
 import streamlit as st
-import pickle
 import numpy as np
+from sklearn.linear_model import LinearRegression
 
-with open("medication_claim_model.pkl", "rb") as f:
-    model = pickle.load(f)
+# Dummy model training (just for testing)
+X_train = np.array([
+    [1, 2018],
+    [2, 2019],
+    [3, 2020],
+    [4, 2021],
+])
+y_train = np.array([100, 200, 300, 400])
 
-import pickle
+model = LinearRegression()
+model.fit(X_train, y_train)
 
-with open("medication_claim_model.pkl", "wb") as f:
-    pickle.dump((model, brand_map), f)
+# Manual brand map
+brand_map = {
+    "Panadol": 1,
+    "Tylenol": 2,
+    "GenericA": 3,
+    "GenericB": 4,
+    "Other": 0
+}
 
-# App UI
-st.title("💊 Predict Medication Claim Volume for Next Year")
+# UI
+st.title("💊 Medication Claim Predictor (Dummy Model)")
 
-# User inputs
-med_name = st.text_input("Enter Medication Name")
-year = st.number_input("Enter Current Year", min_value=2000, max_value=2100, step=1)
+brand = st.selectbox("Select Brand", list(brand_map.keys()))
+year = st.number_input("Enter Current Year", min_value=2010, max_value=2100, step=1)
 
-if st.button("Predict Next Year Claim"):
-    if med_name in brand_map:
-        brand_encoded = brand_map[med_name]
-        input_data = np.array([[brand_encoded, year]])
-        prediction = model.predict(input_data)[0]
-        st.success(f"📈 Predicted claims for {med_name} in {year + 1}: {prediction:,.2f}")
-    else:
-        st.error(f"❌ Medication '{med_name}' not found in model. Try another name.")
+if st.button("Predict"):
+    brand_encoded = brand_map[brand]
+    input_data = np.array([[brand_encoded, year]])
+    prediction = model.predict(input_data)[0]
+    st.success(f"📈 Predicted claims for {brand} in {year + 1}: {prediction:,.2f}")
+
