@@ -4,7 +4,7 @@ import pickle
 import numpy as np
 
 # Load the trained model
-with open("best_model_linear_regression.pkl", "rb") as f:
+with open("medication_claim_model.pkl", "rb") as f:
     model = pickle.load(f)
 
 # Page title
