@@ -1,24 +1,31 @@
-
-import xgboost as xgb
+import streamlit as st
 import pickle
 import numpy as np
-import pandas as pd
-from sklearn.model_selection import train_test_split
 
-# Create dummy data
-df = pd.DataFrame({
-    'brand_encoded': np.random.randint(0, 5, 100),
-    'year': np.random.randint(2018, 2022, 100),
-    'claims': np.random.randint(1000, 5000, 100)
-})
+# Load the trained model
+with open("medication_claim_model.pkl", "rb") as f:
+    model = pickle.load(f)
 
-X = df[['brand_encoded', 'year']]
-y = df['claims']
+# Mapping
+brand_map = {
+    "Panadol": 1,
+    "Tylenol": 2,
+    "GenericA": 3,
+    "GenericB": 4,
+    "Other": 0
+}
 
-# Train dummy XGBoost model
-model = xgb.XGBRegressor()
-model.fit(X, y)
+# App title
+st.title("💊 Medication Claim Predictor")
 
-# Save model
-with open("medication_claim_model.pkl", "wb") as f:
-    pickle.dump(model, f)
+# Inputs
+brand = st.selectbox("Select Medication Name", list(brand_map.keys()))
+year = st.number_input("Enter Current Year", min_value=2000, max_value=2100, step=1)
+
+# Predict
+if st.button("Predict Next Year Claim"):
+    brand_encoded = brand_map[brand]
+    input_data = np.array([[brand_encoded, year]])
+    prediction = model.predict(input_data)[0]
+    st.success(f"📈 Predicted claims for {brand} in {year + 1}: {prediction:,.2f}")
+
