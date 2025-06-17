@@ -3,11 +3,19 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 
+# Define 30 real-sounding medication brand names
+med_names = [
+    "Panadol", "Aspirin", "Tylenol", "Zyrtec", "Claritin", "Advil", "Motrin", "Nurofen", "Aleve", "Benadryl",
+    "Paracetamol", "Brufen", "Voltaren", "Sudafed", "Excedrin", "Codeine", "Ibuprofen", "Cataflam", "Loratadine",
+    "Cetirizine", "Diclofenac", "Amoxicillin", "Augmentin", "Prednisone", "Omeprazole", "Esomeprazole", "Ranitidine",
+    "Metformin", "Atorvastatin", "Simvastatin"
+]
+
 # Create dummy data
 df = pd.DataFrame({
-    'brand_encoded': np.random.randint(0, 15, 100),
-    'year': np.random.randint(2018, 2023, 100),
-    'claims': np.random.randint(1000, 5000, 100)
+    'brand_encoded': np.random.randint(0, len(med_names), 150),
+    'year': np.random.randint(2018, 2023, 150),
+    'claims': np.random.randint(1000, 5000, 150)
 })
 
 X = df[['brand_encoded', 'year']]
@@ -17,8 +25,8 @@ y = df['claims']
 model = RandomForestRegressor()
 model.fit(X, y)
 
-# Generate dummy brand map
-brand_map = {f"Med_{i}": i for i in range(15)}
+# Create brand map
+brand_map = {name: idx for idx, name in enumerate(med_names)}
 
 st.title("💊 Medication Claim Predictor")
 
